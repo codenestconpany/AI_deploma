@@ -1,0 +1,41 @@
+import pandas as pd
+
+df=pd.read_csv("bank_transactions_data_2.csv",encoding='latin-1')
+print("loded successfully")
+print("-"*30)
+print(df.head(1000))
+numeric_cols=df.select_dtypes(include=['number']).columns
+print("-"*30)
+print("Digital Colmns are :")
+print("-"*30)
+print(df[numeric_cols].head())
+print("-"*30)
+print(df.describe())
+print("-"*30)
+print(df.info())
+print("-"*30)
+print("num.of null values")
+print("-"*30)
+print(df.isnull().sum())
+print("-"*30)
+mean_value=df.describe()['TransactionAmount']['mean']
+df['TransactionAmount']=df['TransactionAmount'].fillna(mean_value)
+print(df.head())
+print("-"*30)
+print(df['TransactionAmount'])
+print("-"*30)
+threshold=3*df.describe()['TransactionAmount']['mean']
+suspicious_df=df[df["TransactionAmount"] >threshold]
+print("----suspicious transactions------")
+print("-"*30)
+print(suspicious_df)
+print("-"*30)
+print(df.columns.to_list())
+print("-"*30)
+print("-----branch totals ------")
+branch_totals=df.groupby('Location')['TransactionAmount'].agg(['sum','count']).reset_index()
+branch_totals.columns=['Location','Total Amount','Transaction Count']
+print(branch_totals)
+df.to_csv('bank_transactions_data_24.csv',index=True)
+print("-"*30)
+print("The file was saved successfully.")
